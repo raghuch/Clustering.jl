@@ -1,7 +1,18 @@
 # K-means algorithm
 
 #### Interface
+@doc """
+The result of k-means clustering with
 
+    centers      : cluster centers (``d`` x ``k`` matrix)
+    assignments  : assignments of point i to cluster n, i.e. assignment[i] = n
+    costs        : costs of the resultant assignments (n)
+    counts       : number of samples assigned to each cluster (k)
+    cweights     : cluster weights (k)
+    totalcost    : total cost (i.e. objective) (k)
+    iterations   : number of elapsed iterations 
+    converged    : whether the procedure converged
+""" -> 
 type KmeansResult{T<:AbstractFloat} <: ClusteringResult
     centers::Matrix{T}         # cluster centers (d x k)
     assignments::Vector{Int}   # assignments (n)
@@ -18,6 +29,13 @@ const _kmeans_default_maxiter = 100
 const _kmeans_default_tol = 1.0e-6
 const _kmeans_default_display = :none
 
+
+@doc """
+Inplace version of k-means algorithm. Takes in an extra parameter ``centers``, 
+a matrix containing the centers and updates the centers inplace.
+
+``k`` is determined as ``size(centers, 2)``. No ``init`` argument is needed.
+""" ->
 function kmeans!{T<:AbstractFloat}(X::Matrix{T}, centers::Matrix{T};
                                    weights=nothing,
                                    maxiter::Integer=_kmeans_default_maxiter, 
@@ -39,12 +57,29 @@ function kmeans!{T<:AbstractFloat}(X::Matrix{T}, centers::Matrix{T};
              round(Int, maxiter), tol, display_level(display))
 end
 
+@doc """
+kmeans(X, k;...) performs k-means clustering with the following input arguments:
+
+* X: the sample matrix; each column of `X` is a sample.
+* k: the number of clusters
+
+Optional keyword arguments: 
+
+* init    : Initialization method `:kmpp`, `:rand`, or `:kmcen`. 
+             Alternatively, an integer vector of length `k` that provides
+             the indices of initial seeds. (default: `:kmpp`) 
+* maxiter : Maximum number of iterations (default: 100) 
+* tol     : Tolerance of objective at convergence (default: 1.0e-6) 
+* weights : Weights of samples: `nothing` for each sample having unit weight or a vector of length `n` to give sample weights (default: `nothing`) 
+* display : Level of information to be displayed. (default: `none`)
+""" ->
 function kmeans(X::Matrix, k::Int; 
                 weights=nothing,
                 init=_kmeans_default_init,
                 maxiter::Integer=_kmeans_default_maxiter, 
                 tol::Real=_kmeans_default_tol,
                 display::Symbol=_kmeans_default_display)
+
 
     m, n = size(X)
     (2 <= k < n) || error("k must have 2 <= k < n.")

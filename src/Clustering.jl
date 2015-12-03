@@ -3,6 +3,10 @@ module Clustering
     using Distances
     using StatsBase
     using Compat
+
+    if VERSION > v"0.4.0-dev"
+        using Docile
+    end
     
     import Base: show
     import StatsBase: IntegerVector, RealVector, RealMatrix, counts

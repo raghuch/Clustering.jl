@@ -3,6 +3,17 @@
 
 #### Result type
 
+@doc """
+Return type of the result of k-medoids, with the following fields:
+
+    medoids: vector (size `k`), of indices of the methods
+    assignments: vector (size `n`) of the assignments
+    acosts: vector (size `n`), of the costs of the resultant assignments
+    counts: vector (size `k`), of the number of samples assigned to each cluster
+    totalcost: total assignment cost (i.e. objective)
+    iterations: number of elapsed iterations 
+    converged: whether the procedure converged
+""" ->
 type KmedoidsResult{T} <: ClusteringResult
     medoids::Vector{Int}        # indices of methods (k)
     assignments::Vector{Int}    # assignments (n)
@@ -21,6 +32,17 @@ const _kmed_default_maxiter = 200
 const _kmed_default_tol = 1.0e-8
 const _kmed_default_display = :none
 
+@doc """
+Perform k-medoids clustering based on a given (dense) cost matrix ``costs``, and ``k``, the number of clusters.
+
+Other optional keyword arguments:
+
+* ``init``   : Initialization algorithm; one of ``:kmpp``, ``:rand``, or ``:kmcen``. Alternatively, provide a 
+               vector of length `k` which contains the indices of initial seeds. (default: ``:kmpp``)
+* ``maxiter``: Maximum number of iterations. (default: 100)
+* ``tol``    : Tolerance of objective at convergence. (default: 1.0e-6)
+* ``display``: The level of information to be displayed (default: ``:none``)
+""" ->
 function kmedoids{T<:Real}(costs::DenseMatrix{T}, k::Integer; 
                            init=_kmed_default_init, 
                            maxiter::Integer=_kmed_default_maxiter, 
@@ -40,6 +62,12 @@ function kmedoids{T<:Real}(costs::DenseMatrix{T}, k::Integer;
                round(Int, maxiter), tol, display_level(display))
 end
 
+@doc """
+Perform k-medoids clustering on a given cost matrix ``costs`` and update inplace. Compared to ``kmedoids`` 
+function, it takes an additional argument ``medoids``, a vector of the medoid indices (integers). 
+    
+This vector serves as the initial guess and finally gets updated with the results inplace. Since it takes the initial seeds, there is no separate ``init`` argument.
+""" ->
 function kmedoids!{T<:Real}(costs::DenseMatrix{T}, medoids::Vector{Int};
                             maxiter::Integer=_kmed_default_maxiter, 
                             tol::Real=_kmed_default_tol,

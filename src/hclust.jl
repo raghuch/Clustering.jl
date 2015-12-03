@@ -5,6 +5,15 @@
 
 ## This is also in types.jl, but that is not read...
 ## Mostly following R's hclust class
+@doc """
+Return type of the hierarchical clustering result with the fields:
+
+* merge  : The clusters merged in order. Negative number indicate leaves.
+* height : Distance at which merges take place.
+* order  : Preferred grouping to draw a dendrogram (not implemented now)
+* labels : Labels of clusters (not implemented now)
+* methods: The clustering method
+""" ->
 type Hclust{T<:Real}
     merge::Matrix{Int}
     height::Vector{T}
@@ -318,6 +327,17 @@ end
 
 ## this calls the routine that gives the correct answer, fastest
 ## method names are inspired by R's hclust
+@doc """
+Perform hierarchical clustering, using these inputs:
+
+* ``d``      : A symmetric "distance" matrix
+* ``method`` : The method to perform the clustering. ``method`` can be one of:
+    * ``:single``  : cluster distance is equal to the mimimum distance between any of the cluster members.
+    * ``:average`` : cluster distance is equal to the mean distance between any of the cluster members.
+    * ``:complete``: cluster distance is equal to the maximum distance between any of the cluster members.
+
+Returns an object of the type ``Hclust``
+""" ->
 function hclust{T<:Real}(d::Symmetric{T}, method::Symbol)
     nc = size(d,1)
     if method == :single
@@ -343,6 +363,17 @@ end
 
 
 ## cut a tree at height `h' or to `k' clusters
+@doc """
+Cut a tree at height ``h`` or to ``k`` number of clusters. Input arguments:
+
+* ``hclust``: An object of the type ``Hclust`` (return type of the `hclust` function).
+*  One of the tree height `h` or number of clusters `k`. (keyword args) 
+
+Default value of ``h`` is 1 and ``k`` is max height of hclust
+
+Output is a vector of indices such that `i`th element in the vector indicates the cluster 
+that point belongs to, i.e. ``vec[i] = n`` if point ``i`` belongs to cluster number ``n``.
+""" ->
 function cutree(hclust::Hclust; k::Int=1, 
                 h::Real=maximum(hclust.height))
     clusters = Vector{Int}[]
