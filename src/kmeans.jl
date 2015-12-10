@@ -31,10 +31,10 @@ const _kmeans_default_display = :none
 
 
 @doc """
-Inplace version of k-means algorithm. Takes in an extra parameter ``centers``, 
-a matrix containing the centers and updates the centers inplace.
+kmeans!(X, centers; ...) is an inplace version of k-means algorithm. Takes in an 
+extra parameter ``centers``, a matrix containing the centers and updates the centers inplace.
 
-``k`` is determined as ``size(centers, 2)``. No ``init`` argument is needed.
+The number of clusters, ``k`` is determined as ``size(centers, 2)``. No ``init`` argument is needed.
 """ ->
 function kmeans!{T<:AbstractFloat}(X::Matrix{T}, centers::Matrix{T};
                                    weights=nothing,

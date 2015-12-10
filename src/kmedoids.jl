@@ -33,7 +33,7 @@ const _kmed_default_tol = 1.0e-8
 const _kmed_default_display = :none
 
 @doc """
-Perform k-medoids clustering based on a given (dense) cost matrix ``costs``, and ``k``, the number of clusters.
+kmedoids(costs, k; ...) performs k-medoids clustering based on a given (dense) cost matrix ``costs``, and ``k``, the number of clusters.
 
 Other optional keyword arguments:
 
@@ -63,8 +63,7 @@ function kmedoids{T<:Real}(costs::DenseMatrix{T}, k::Integer;
 end
 
 @doc """
-Perform k-medoids clustering on a given cost matrix ``costs`` and update inplace. Compared to ``kmedoids`` 
-function, it takes an additional argument ``medoids``, a vector of the medoid indices (integers). 
+kmedoids!(costs, medoids; ...) performs k-medoids clustering on a given cost matrix ``costs`` and update inplace. Compared to ``kmedoids(...)``, it takes an additional argument ``medoids``, a vector of the medoid indices (integers). 
     
 This vector serves as the initial guess and finally gets updated with the results inplace. Since it takes the initial seeds, there is no separate ``init`` argument.
 """ ->

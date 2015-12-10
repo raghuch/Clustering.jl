@@ -24,11 +24,39 @@ function generate_clustered_data(;seed::Float64=0.0, n_clusters::Int64=3, n_feat
     return A
 end
 
+@doc"""
+takes in an argument ``random_state`` and returns a random number generator type.
+``random_state`` can be an integer, or an instance of the type ``AbstractRNG``, or 
+a symbol ``:None``.
+""" ->
+function check_random_state(random_state)
+#To add: ability to specify size of the vector/matrix of random numbers.
 
-function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=5, centers::Int64=5, clustered_std::Float64=1.0, center_box = (-10.0, 10.0), shuffle::Bool=true, random_state=0 )
+    if typeof(random_state) <: AbstractRNG
+        return random_state
+    elseif typeof(random_state) <: Int
+        return MersenneTwister(random_state)
+    elseif random_state == :None
+        return RandomDevice()
+    else
+        return error("random_state should be an integer or the symbol ':None' or an rng...")
+    end
+end
 
-    rng = MersenneTwister(random_state)
-    cluster_centers = rand(rng, (centers, n_features))
+
+function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=5, centers::Int64=5, clustered_std::Float64=1.0, center_box = (-10.0, 10.0), shuffle::Bool=true, random_state=:None )
+
+    rng = check_random_state(random_state)
+
+    cluster_centers = rand(rng, -center_box[1]:center_box[2], (centers, n_features))
+
+    n_centers = size(cluster_centers, 1)
+    samples_per_center = round(Int, n_samples/n_centers)
+    sample_size_array = ones(samples_per_cluster) * samples_per_center
+
+    for i in 1:(n_samples % n_clusters)
+        sample_size_array = 
+    end
     
     cluster_std = ones(size(cluster_centers, 1)) * cluster_std
 
