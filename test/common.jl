@@ -43,8 +43,21 @@ function check_random_state(random_state)
     end
 end
 
+@doc"""
+Generate a normal random distribution centered at ``loc`` and standard deviation ``scale``
+""" ->
+function randn(rng::AbstractRNG; loc=0.0, scale=1.0)
+    return loc + (scale * randn(rng))
+end
 
-function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=5, centers::Int64=5, clustered_std::Float64=1.0, center_box = (-10.0, 10.0), shuffle::Bool=true, random_state=:None )
+#function randn(rng::AbstractRNG; loc = 0.0, scale=1.0 )
+#end
+
+
+function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=5, centers::Int64=5, cluster_std::Float64=1.0, center_box = (-10.0, 10.0), shuffle::Bool=true, random_state=:None )
+
+    X = zeros(n_samples, n_features)
+    y = zeros(n_samples)
 
     rng = check_random_state(random_state)
 
@@ -55,10 +68,16 @@ function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=5, centers
     sample_size_array = ones(samples_per_cluster) * samples_per_center
 
     for i in 1:(n_samples % n_clusters)
-        sample_size_array = 
+        sample_size_array[i] += 1
     end
     
     cluster_std = ones(size(cluster_centers, 1)) * cluster_std
+
+    for i, (n, std) in enumerate(zip(sample_size_array, cluster_std))
+        X[i] = cluster_centers[i] + (cluster_std * randn(n, n_features))
+        y[i] += 
+    end
+
 
 
 end
