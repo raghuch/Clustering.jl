@@ -24,11 +24,11 @@ function generate_clustered_data(;seed::Float64=0.0, n_clusters::Int64=3, n_feat
     return A
 end
 
-@doc"""
-takes in an argument ``random_state`` and returns a random number generator type.
-``random_state`` can be an integer, or an instance of the type ``AbstractRNG``, or 
-a symbol ``:None``.
-""" ->
+#@doc"""
+#takes in an argument ``random_state`` and returns a random number generator type.
+#``random_state`` can be an integer, or an instance of the type ``AbstractRNG``, or 
+#a symbol ``:None``.
+#""" ->
 function check_random_state(random_state)
 #To add: ability to specify size of the vector/matrix of random numbers.
 
@@ -43,41 +43,44 @@ function check_random_state(random_state)
     end
 end
 
-@doc"""
-Generate a normal random distribution centered at ``loc`` and standard deviation ``scale``
-""" ->
-function randn(rng::AbstractRNG; loc=0.0, scale=1.0)
-    return loc + (scale * randn(rng))
-end
+#@doc"""
+#Generate a normal random distribution centered at ``loc`` and standard deviation ``scale``
+#""" ->
+#function randn(rng::AbstractRNG; loc=0.0, scale=1.0)
+#    return loc + (scale * randn(rng))
+#end
 
 #function randn(rng::AbstractRNG; loc = 0.0, scale=1.0 )
 #end
 
 
-function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=5, centers::Int64=5, cluster_std::Float64=1.0, center_box = (-10.0, 10.0), shuffle::Bool=true, random_state=:None )
+function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=5, n_centers::Int64=5, cluster_std::Float64=1.0, center_box = (-10.0, 10.0), shuffle::Bool=true, random_state=:None )
 
-    X = zeros(n_samples, n_features)
-    y = zeros(n_samples)
+    #X = zeros(n_samples, n_features)
+    #y = zeros(n_samples)
+    X = []
+    y = []
 
     rng = check_random_state(random_state)
+    cluster_centers = rand(rng, -center_box[1]:center_box[2], (n_centers, n_features))
 
-    cluster_centers = rand(rng, -center_box[1]:center_box[2], (centers, n_features))
-
-    n_centers = size(cluster_centers, 1)
     samples_per_center = round(Int, n_samples/n_centers)
-    sample_size_array = ones(samples_per_cluster) * samples_per_center
+    #sample_size_array =  ones(samples_per_center) * n_centers
+    sample_size_array = [n_centers for i in samples_per_center]
 
-    for i in 1:(n_samples % n_clusters)
+    for i in 1:(n_samples % n_centers)
         sample_size_array[i] += 1
     end
     
-    cluster_std = ones(size(cluster_centers, 1)) * cluster_std
+    #We assume the std deviation of all clusters is the same and passed as a parameter. We form
+    # a vector of of size "number of clusters", with std devation of each cluster
+    std = ones(size(cluster_centers, 1)) * cluster_std
 
-    for i, (n, std) in enumerate(zip(sample_size_array, cluster_std))
-        X[i] = cluster_centers[i] + (cluster_std * randn(n, n_features))
-        y[i] += 
+    for (i, n) in enumerate(sample_size_array)
+        curr_std = std[i]
+        push!(X, cluster_centers[i, :] .+ (curr_std* randn( n, n_features) ))
+        push!(y, [i for el in n])
     end
 
-
-
+    return X, y
 end
