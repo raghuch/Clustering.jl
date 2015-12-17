@@ -54,33 +54,57 @@ end
 #end
 
 
-function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=5, n_centers::Int64=5, cluster_std::Float64=1.0, center_box = (-10.0, 10.0), shuffle::Bool=true, random_state=:None )
-
-    #X = zeros(n_samples, n_features)
-    #y = zeros(n_samples)
-    X = []
-    y = []
+function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=7, n_centers::Int64=5, cluster_std::Float64=1.0, center_box = (-10.0, 10.0), shuffle::Bool=true, random_state=:None )
 
     rng = check_random_state(random_state)
     cluster_centers = rand(rng, -center_box[1]:center_box[2], (n_centers, n_features))
 
     samples_per_center = round(Int, n_samples/n_centers)
-    #sample_size_array =  ones(samples_per_center) * n_centers
-    sample_size_array = [n_centers for i in samples_per_center]
+    sample_size_array = [(1*samples_per_center) for i in 1:n_centers]
 
     for i in 1:(n_samples % n_centers)
         sample_size_array[i] += 1
     end
+
+    X = Array{Array{Float64, 1}}(n_samples)
+    random_dataset = zeros(n_samples, n_features)
+    y = Array{Int64}(n_samples)
+    random_y = similar(y)
     
     #We assume the std deviation of all clusters is the same and passed as a parameter. We form
     # a vector of of size "number of clusters", with std devation of each cluster
     std = ones(size(cluster_centers, 1)) * cluster_std
 
+    curr_sample_num = 0
     for (i, n) in enumerate(sample_size_array)
         curr_std = std[i]
-        push!(X, cluster_centers[i, :] .+ (curr_std* randn( n, n_features) ))
-        push!(y, [i for el in n])
+        for j in 1:n
+            X[curr_sample_num + j] = vec(cluster_centers[i, :]) + (curr_std * randn(n_features))
+            y[curr_sample_num+j] = i
+        end
+        curr_sample_num += n
     end
 
-    return X, y
+    if shuffle==true
+        for i in 1:length(X)
+            random_order = shuffle(collect(1:length(y) ) )
+            random_y = y[random_order]
+            X = X[random_order]
+        end
+    else
+        random_y = y
+    end
+    
+    for i in 1:length(X)
+        random_dataset[i, :] = X[i]
+    end
+
+    return random_dataset, random_y
+
+end
+
+function get_test_data()
+    X, y = generate_data_blobs(n_samples=100, n_features=5, n_centers=5, cluster_std=1.0, center_box=(-10.0, 10.0), shuffle=true, random_state=:None)
+
+
 end
