@@ -69,7 +69,8 @@ function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=7, n_cente
     X = Array{Array{Float64, 1}}(n_samples)
     random_dataset = zeros(n_samples, n_features)
     y = Array{Int64}(n_samples)
-    random_y = similar(y)
+    #random_y = similar(y)
+    #random_order = zeros(y)
     
     #We assume the std deviation of all clusters is the same and passed as a parameter. We form
     # a vector of of size "number of clusters", with std devation of each cluster
@@ -85,12 +86,15 @@ function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=7, n_cente
         curr_sample_num += n
     end
 
+    a = collect(1:100)
+    random_order = shuffle!(a)
+
     if shuffle==true
-        for i in 1:length(X)
-            random_order = shuffle(collect(1:length(y) ) )
-            random_y = y[random_order]
-            X = X[random_order]
-        end
+        #for i in 1:length(X)
+        #random_order = shuffle( collect(1:n_samples) )
+        random_y = y[random_order]
+        X = X[random_order]
+        #end
     else
         random_y = y
     end
