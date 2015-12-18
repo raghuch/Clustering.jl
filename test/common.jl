@@ -86,7 +86,13 @@ function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=7, n_cente
         curr_sample_num += n
     end
 
-    a = collect(1:100)
+    return X, y
+end
+
+function randomize_data(X::Matrix, y::AbstractArray)
+
+
+    a = collect(1:length(y))
     random_order = shuffle!(a)
 
     if shuffle==true
