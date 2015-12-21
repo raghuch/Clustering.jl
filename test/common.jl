@@ -50,11 +50,7 @@ end
 #    return loc + (scale * randn(rng))
 #end
 
-#function randn(rng::AbstractRNG; loc = 0.0, scale=1.0 )
-#end
-
-
-function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=7, n_centers::Int64=5, cluster_std::Float64=1.0, center_box = (-10.0, 10.0), shuffle::Bool=true, random_state=:None )
+function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=7, n_centers::Int64=5, cluster_std::Float64=1.0, center_box = (-10.0, 10.0), random_state=:None )
 
     rng = check_random_state(random_state)
     cluster_centers = rand(rng, -center_box[1]:center_box[2], (n_centers, n_features))
@@ -67,10 +63,7 @@ function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=7, n_cente
     end
 
     X = Array{Array{Float64, 1}}(n_samples)
-    random_dataset = zeros(n_samples, n_features)
     y = Array{Int64}(n_samples)
-    #random_y = similar(y)
-    #random_order = zeros(y)
     
     #We assume the std deviation of all clusters is the same and passed as a parameter. We form
     # a vector of of size "number of clusters", with std devation of each cluster
@@ -86,35 +79,28 @@ function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=7, n_cente
         curr_sample_num += n
     end
 
+    #for i in 1:length(X)
+    #    dataset[i, :] = X[i]
+    #end
+
     return X, y
 end
 
-function randomize_data(X::Matrix, y::AbstractArray)
-
+function randomize_data(X::AbstractArray, y::AbstractVector; randomize::Bool=true)
 
     a = collect(1:length(y))
     random_order = shuffle!(a)
+    dataset = zeros(length(X), length(X[1]) )
 
-    if shuffle==true
-        #for i in 1:length(X)
-        #random_order = shuffle( collect(1:n_samples) )
-        random_y = y[random_order]
+    if randomize==true
+        y = y[random_order]
         X = X[random_order]
-        #end
-    else
-        random_y = y
     end
     
     for i in 1:length(X)
-        random_dataset[i, :] = X[i]
+        dataset[i, :] = X[i]
     end
 
-    return random_dataset, random_y
-
+    return dataset, y
 end
 
-function get_test_data()
-    X, y = generate_data_blobs(n_samples=100, n_features=5, n_centers=5, cluster_std=1.0, center_box=(-10.0, 10.0), shuffle=true, random_state=:None)
-
-
-end
