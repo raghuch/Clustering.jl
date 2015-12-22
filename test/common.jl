@@ -43,13 +43,6 @@ function check_random_state(random_state)
     end
 end
 
-#@doc"""
-#Generate a normal random distribution centered at ``loc`` and standard deviation ``scale``
-#""" ->
-#function randn(rng::AbstractRNG; loc=0.0, scale=1.0)
-#    return loc + (scale * randn(rng))
-#end
-
 function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=7, n_centers::Int64=5, cluster_std::Float64=1.0, center_box = (-10.0, 10.0), random_state=:None )
 
     rng = check_random_state(random_state)
@@ -79,10 +72,6 @@ function generate_data_blobs(;n_samples::Int64=100, n_features::Int64=7, n_cente
         curr_sample_num += n
     end
 
-    #for i in 1:length(X)
-    #    dataset[i, :] = X[i]
-    #end
-
     return X, y
 end
 
@@ -90,7 +79,7 @@ function randomize_data(X::AbstractArray, y::AbstractVector; randomize::Bool=tru
 
     a = collect(1:length(y))
     random_order = shuffle!(a)
-    dataset = zeros(length(X), length(X[1]) )
+    dataset = zeros(length(X[1]), length(X) )
 
     if randomize==true
         y = y[random_order]
@@ -98,7 +87,7 @@ function randomize_data(X::AbstractArray, y::AbstractVector; randomize::Bool=tru
     end
     
     for i in 1:length(X)
-        dataset[i, :] = X[i]
+        dataset[:, i] = X[i]
     end
 
     return dataset, y
