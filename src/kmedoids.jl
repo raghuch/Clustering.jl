@@ -6,13 +6,13 @@
 @doc """
 Return type of the result of k-medoids, with the following fields:
 
-    medoids: vector (size `k`), of indices of the methods
+    medoids:     vector (size `k`), of indices of the methods
     assignments: vector (size `n`) of the assignments
-    acosts: vector (size `n`), of the costs of the resultant assignments
-    counts: vector (size `k`), of the number of samples assigned to each cluster
-    totalcost: total assignment cost (i.e. objective)
-    iterations: number of elapsed iterations 
-    converged: whether the procedure converged
+    acosts:      vector (size `n`), of the costs of the resultant assignments
+    counts:      vector (size `k`), of the number of samples assigned to each cluster
+    totalcost:   total assignment cost (i.e. objective)
+    iterations:  number of elapsed iterations 
+    converged:   whether the procedure converged
 """ ->
 type KmedoidsResult{T} <: ClusteringResult
     medoids::Vector{Int}        # indices of methods (k)

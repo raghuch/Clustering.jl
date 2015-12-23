@@ -1,5 +1,16 @@
 # Variation of Information
 
+@doc"""
+Computes the variation of information between two assignments. 
+
+Input parameters:
+
+*``k1``  : Number of clusters in the first clustering
+*``k2``  : Number of clusters in the second clustering
+*``a1``  : Assignment vector for the first clustering
+*``a2``  : Assignment vector for the second clustering
+
+"""->
 function varinfo(k1::Int, a1::AbstractVector{Int}, 
                  k2::Int, a2::AbstractVector{Int})
 
@@ -48,9 +59,17 @@ function varinfo(k1::Int, a1::AbstractVector{Int},
     return H1 + H2 - I * 2.0
 end
 
+@doc"""
+This method for variation of information takes in an instance of clustering result "``R``" and 
+computes the variation with another clustering given by ``k0`` number of clusters and the assignment vector ``a0``.
+"""->
 varinfo(R::ClusteringResult, k0::Int, a0::AbstractVector{Int}) = 
     varinfo(nclusters(R), assignments(R), k0, a0)
 
+@doc"""
+This method for variation information takes in two instances ``R1`` and ``R2`` of the clustering result
+datatype.
+"""->
 varinfo(R1::ClusteringResult, R2::ClusteringResult) = 
     varinfo(nclusters(R1), assignments(R1), 
             nclusters(R2), assignments(R2))

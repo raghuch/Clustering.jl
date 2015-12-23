@@ -8,6 +8,13 @@
 #
 
 
+@doc"""
+DbscanResult is the return type op dbscan clustering algorithm, with the following fields:
+
+    seeds       : A vector containing the starting points of clusters; size (``k``, )
+    assignments : A vector containing the assignments of points to clusters; size (``n``, )
+    counts      : A vector containing the number of points in each cluster; size (``k``, )
+""" ->
 type DbscanResult <: ClusteringResult
     seeds::Vector{Int}          # starting points of clusters, size (k,)
     assignments::Vector{Int}    # assignments, size (n,)
@@ -17,6 +24,14 @@ end
 
 ## main algorithm
 
+@doc"""
+Density based spatial clustering of applications with noise (``DBSCAN``) is a density-based clustering
+algorithm. dbscan(D, eps, minpts) is a Julia implementation of DBSCAN which takes in the following inputs:
+
+* ``D``     : A (dense) distance matrix such that D[i, j] = distance between ``i`` and ``j``
+*``eps``    : The radius of a neighborhood; a positive real value 
+*``minpts`` : minimum number of neighborhood points (including self) to qualify as a density point
+""" ->
 function dbscan{T<:Real}(D::DenseMatrix{T}, eps::Real, minpts::Int)
     # check arguments
     n = size(D, 1)

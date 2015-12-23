@@ -93,3 +93,8 @@ function randomize_data(X::AbstractArray, y::AbstractVector; randomize::Bool=tru
     return dataset, y
 end
 
+
+
+function generate_clustered_data()
+
+end

@@ -8,6 +8,16 @@
 
 #### Interface
 
+@doc """
+AffinityPropResult is a type containing the result of clustering by affinity propagation algorithm.
+This type has the fields:
+
+    exemplars  : A vector of the indices of centers (points), representative of their clusters
+    assignments: A vector containing the assignment of each of the points to a cluster
+    counts     : A vector containing the counts of each cluster
+    iterations : Number of iterations done
+    converged  : Whether the algorithm converged or not
+""" ->
 type AffinityPropResult <: ClusteringResult
     exemplars::Vector{Int}      # indexes of exemplars (centers)
     assignments::Vector{Int}    # assignments for each point
@@ -21,6 +31,20 @@ const _afp_default_damp = 0.5
 const _afp_default_tol = 1.0e-6
 const _afp_default_display = :none
 
+@doc """
+The affinity propagation algorithm takes in the following inputs:
+
+*``S`` : A dense matrix 
+
+with these optional parameters:
+
+*``maxiter`` : Maximum number of iterations allowed (default: 100)
+*``tol``     : tolerable change of objective (default: 1.0e-6)
+*``damp``    : the dampening factor; a real value 0 < damp < 1. A low value of damp indicates
+               slower update. damp = 0 means no dampening is performed  (default: 0.5)
+*``display`` : level of information to be displayed (default: :none)
+
+"""->
 function affinityprop{T<:AbstractFloat}(S::DenseMatrix{T}; 
                                         maxiter::Integer=_afp_default_maxiter,
                                         tol::Real=_afp_default_tol,
