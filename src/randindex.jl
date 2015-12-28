@@ -1,3 +1,8 @@
+
+@doc"""
+randindex calculates rand indices comparing two clustering assignments ``c1`` and ``c2`` and returns
+a tuple "Hubert & Arabie adjusted Rand index" (AR, RI, MI, HI).
+""" ->
 function randindex(c1,c2)
 	# rand_index - calculates Rand Indices to compare two partitions
 	# (AR, RI, MI, HI) = rand(c1,c2), where c1,c2 are vectors listing the 
@@ -39,5 +44,13 @@ function randindex(c1,c2)
 	return (ARI, RI, MI, HI)
 end
 
+@doc"""
+randindex(R, c0) is a method to calculate rand indices, given an ``R`` of the type "ClusteringResult" and
+ a vector ``c0`` of clustering assignment.
+""" ->
 randindex(R::ClusteringResult, c0::AbstractVector{Int}) = randindex(assignments(R), c0)
+
+@doc"""
+randindex(R1, R2) is a method to calculate rand indices, given ``R1`` and ``R2`` of the type "ClusteringResult".
+""" ->
 randindex(R1::ClusteringResult, R2::ClusteringResult) = randindex(assignments(R2), assignments(R1)) 

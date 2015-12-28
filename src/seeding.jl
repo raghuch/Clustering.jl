@@ -17,6 +17,10 @@
 #   This function returns iseeds
 #
 
+@doc"""
+``SeedingAlgorithm`` is an abstract type, the instances of which are used to initialize 'seeds' for 
+various clustering methods. For example, ``kmpp`` (Kmeans++) for k-means clustering...
+""" ->
 abstract SeedingAlgorithm
 
 initseeds(alg::SeedingAlgorithm, X::RealMatrix, k::Integer) = 

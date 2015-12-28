@@ -21,7 +21,15 @@ function sil_aggregate_dists{T<:Real}(k::Int, a::AbstractVector{Int}, dists::Den
     return r
 end
 
+@doc"""
+silhouettes is an algorithm to validate the results of clustering. Silhouettes takes in these inputs:
 
+*assignments : The assignments of points in the data to clusters
+*counts      : The number of points in each cluster
+*dists       : A dense matrix containing the pairwise distances d[i, j]
+
+and returns a vector of silhouettes of the individual points.
+""" ->
 function silhouettes{T<:Real}(assignments::Vector{Int}, 
                               counts::AbstractVector{Int}, 
                               dists::DenseMatrix{T})
@@ -77,5 +85,10 @@ function silhouettes{T<:Real}(assignments::Vector{Int},
     return sil
 end
 
+@doc"""
+silhouettes(R::ClusteringResult, dists::DenseMatrix) is a version of the silhouettes algorithm which
+takes 2 inputs: ``R`` of the type 'ClusteringResult' and a dense matrix ``dists``, which is a matrix
+containing distances d[i, j] ≡ distance between 'i' and 'j'
+""" ->
 silhouettes(R::ClusteringResult, dists::DenseMatrix) = 
     silhouettes(assignments(R), counts(R), dists) 
