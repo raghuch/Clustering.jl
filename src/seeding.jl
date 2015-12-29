@@ -19,13 +19,33 @@
 
 @doc"""
 ``SeedingAlgorithm`` is an abstract type, the instances of which are used to initialize 'seeds' for 
-various clustering methods. For example, ``kmpp`` (Kmeans++) for k-means clustering...
+various clustering methods. For example, ``KmppAlg()`` (Kmeans++), ``KmCentralityAlg()`` (kmcen),
+or ``RandSeedAlg()`` (rand) for k-means clustering...
 """ ->
 abstract SeedingAlgorithm
 
+@doc"""
+``initseeds`` are a set of functions called to set the initial state or select ``k`` 'seeds' from a sample matroix ``X`` for clustering algorithms.
+Methods to call ``initseeds``:
+
+*initseeds(alg, X, k)
+*initseeds(algname, X, k)
+
+where ``X`` is a Real data Matrix, ``k`` is the length of the seed vector, ``alg`` is a type of seeding algorithm, and ``algname`` is a symbol which corresponds to a seeding algorithm (one of ``kmpp``, ``rand`` or ``kmcen``).
+
+Returns an integer vector (length ``k``) containing the indices of selected seeds.
+"""->
 initseeds(alg::SeedingAlgorithm, X::RealMatrix, k::Integer) = 
     initseeds!(Array(Int, k), alg, X)
 
+@doc"""
+initseeds_by_costs is an initialization method for clustering which selects ``k`` seeds, given a cost matrix ``C``, i.e. ``C[i, j]`` is the cost of placing samples ``i`` and ``j`` in the same cluster. Methods to call:
+
+*initseeds_by_costs(alg, C, k)
+*initseeds_by_costs(algname, C, k)
+
+``C`` is the cost matrix, ``k`` is a vector containing indices of the seeds, ``alg`` is of the type ``SeedingAlgorithm`` or ``algname`` is a symbol to choose the iniitialization method (one of ``kmpp``, ``rand`` or ``kmcen``).
+""" ->
 initseeds_by_costs(alg::SeedingAlgorithm, costs::RealMatrix, k::Integer) = 
     initseeds_by_costs!(Array(Int, k), alg, costs)
 
@@ -57,6 +77,9 @@ function copyseeds!(S::DenseMatrix, X::DenseMatrix, iseeds::AbstractVector)
     return S
 end
 
+#@doc"""
+#copyseeds(X::DenseMatrix, iseeds::AbstractVector) copies the seeds from a matrix X to a matrix S
+#""" ->
 copyseeds{T}(X::DenseMatrix{T}, iseeds::AbstractVector) = 
     copyseeds!(Array(T, size(X,1), length(iseeds)), X, iseeds)
 
